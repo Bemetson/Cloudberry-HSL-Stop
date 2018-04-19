@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Cloudberry HSL Stop</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="navigation_list_of_stops">Bus stops</string>
+    <string name="navigation_map_view">Map</string>
+
+    <string name="bus_195">195</string>
+    <string name="bus_195_text">Latokartano - Kamppi</string>
+</resources>
+
+
