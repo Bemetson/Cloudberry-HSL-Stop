@@ -7,8 +7,8 @@
         android:title="@string/navigation_list_of_stops" />
 
     <item
-        android:id="@+id/navigation_map_view"
-        android:icon="@drawable/ic_pin_drop_black_24dp"
-        android:title="@string/navigation_map_view" />
+        android:id="@+id/navigation_contacts"
+        android:icon="@drawable/ic_contacts_black_24dp"
+        android:title="@string/navigation_contacts" />
 
 </menu>

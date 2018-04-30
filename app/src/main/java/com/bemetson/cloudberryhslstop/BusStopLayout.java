@@ -1,6 +1,9 @@
 package com.bemetson.cloudberryhslstop;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +15,14 @@ public class BusStopLayout extends LinearLayout {
 
     Activity context;
     String stopname;
-    Boolean isPressed;
+    boolean isPressed;
     ImageView imageView;
     Button button;
-    int darkGrey = getResources().getColor(R.color.darkGrey);
+    int darkerGrey = getResources().getColor(R.color.darkerGrey);
     int white = getResources().getColor(R.color.white);
+    boolean isClickable = true;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
 
     public BusStopLayout(Activity context, String stopname) {
@@ -25,6 +31,10 @@ public class BusStopLayout extends LinearLayout {
         this.context = context;
         this.stopname = stopname;
         this.isPressed = false;
+
+        sharedPreferences = context.getSharedPreferences("selectedBusStopBoolean", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        //Log.w("Sharedpref value: ", String.valueOf(isBusStopSelected));
 
         final ImageView imageView = new ImageView(context);
         imageView.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
@@ -41,20 +51,27 @@ public class BusStopLayout extends LinearLayout {
         buttonParams.setMargins(DPConverter(8), 0, DPConverter(16), 0);
         button.setTextSize(12.0f);
         button.setBackgroundResource(R.drawable.button_layout);
-        button.setTextColor(darkGrey);
+        button.setTextColor(darkerGrey);
         button.setPadding(0, 12, 0, 12); // It may be bad practice to put direct values here
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isPressed) {
-                    imageView.setImageResource(R.drawable.ic_access_alarms_black_24dp);
-                    isPressed = true;
-                    button.setBackgroundResource(R.drawable.button_selected_layout);
-                    button.setTextColor(white);
-                } else {
-                    resetSelection();
-                }
+                if (!isPressed && isClickable) {
+                    boolean anotherBusStopSelected = sharedPreferences.getBoolean("busSelected", true);
+                    if (!anotherBusStopSelected) {
+                        imageView.setImageResource(R.drawable.ic_access_alarms_black_24dp);
+                        isPressed = true;
+                        button.setBackgroundResource(R.drawable.button_selected_layout);
+                        button.setTextColor(white);
+                        editor.putBoolean("busSelected", true);
+                        editor.commit();
+                    }
 
+                } else {
+                    if (isClickable) {
+                        resetSelection();
+                    }
+                }
             }
         });
         this.addView(button, buttonParams);
@@ -71,10 +88,27 @@ public class BusStopLayout extends LinearLayout {
         return value;
     }
 
+    // Reset the button selection
     public void resetSelection() {
-        this.imageView.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
         isPressed = false;
+        this.imageView.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
         this.button.setBackgroundResource(R.drawable.button_layout);
-        this.button.setTextColor(this.darkGrey);
+        this.button.setTextColor(this.darkerGrey);
+        editor.putBoolean("busSelected", false);
+        editor.commit();
     }
+
+
+    public void busHasPassed() {
+        this.isClickable = false; // Set the buttons to be not clickable after bus has passed the stop
+        this.imageView.setImageResource(R.drawable.ic_radio_button_checked_black_24dp);
+        this.button.setBackgroundResource(R.drawable.button_disabled);
+        this.button.setTextColor(this.darkerGrey);
+    }
+
+    public void debug_reset() {
+        this.isClickable = true;
+        resetSelection();
+    }
+
 }
