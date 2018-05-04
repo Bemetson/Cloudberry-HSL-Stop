@@ -10,11 +10,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class BusStopLayout extends LinearLayout {
 
     Activity context;
     String stopname;
+    String estimate;
     boolean isPressed;
     ImageView imageView;
     Button button;
@@ -23,6 +25,7 @@ public class BusStopLayout extends LinearLayout {
     boolean isClickable = true;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    TextView estimateTextView;
 
 
     public BusStopLayout(Activity context, String stopname) {
@@ -31,6 +34,7 @@ public class BusStopLayout extends LinearLayout {
         this.context = context;
         this.stopname = stopname;
         this.isPressed = false;
+        //this.estimate = estimate;
 
         sharedPreferences = context.getSharedPreferences("selectedBusStopBoolean", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -65,11 +69,18 @@ public class BusStopLayout extends LinearLayout {
                         button.setTextColor(white);
                         editor.putBoolean("busSelected", true);
                         editor.commit();
+
+                        LinearLayout estimateLayout = (LinearLayout) findViewById(R.id.navigation_estimate_of_arrival);
+                        estimateTextView = new TextView(getContext());
+                        estimateTextView.setText("Test text");
+                        LinearLayout.LayoutParams estimateParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+                        estimateLayout.addView(estimateTextView, estimateParams);
                     }
 
                 } else {
                     if (isClickable) {
                         resetSelection();
+
                     }
                 }
             }

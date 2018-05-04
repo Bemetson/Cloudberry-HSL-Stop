@@ -238,4 +238,7 @@ public class SelectionActivity extends AppCompatActivity {
         return builder.build();
     }
 
+    public void showEstimateForArrival() {
+        Log.w("Estimate", "Button was clicked");
+    }
 }
