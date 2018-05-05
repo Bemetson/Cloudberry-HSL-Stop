@@ -26,15 +26,16 @@ public class BusStopLayout extends LinearLayout {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     TextView estimateTextView;
+    LinearLayout estimateLayout;
 
 
-    public BusStopLayout(Activity context, String stopname) {
+    public BusStopLayout(final Activity context, String stopname, final String estimate) {
         super(context);
 
         this.context = context;
         this.stopname = stopname;
         this.isPressed = false;
-        //this.estimate = estimate;
+        this.estimate = estimate;
 
         sharedPreferences = context.getSharedPreferences("selectedBusStopBoolean", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -70,17 +71,17 @@ public class BusStopLayout extends LinearLayout {
                         editor.putBoolean("busSelected", true);
                         editor.commit();
 
-                        LinearLayout estimateLayout = (LinearLayout) findViewById(R.id.navigation_estimate_of_arrival);
-                        estimateTextView = new TextView(getContext());
-                        estimateTextView.setText("Test text");
+                        estimateLayout = ((SelectionActivity)context).findViewById(R.id.navigation_estimate_of_arrival);
+                        estimateTextView = new TextView(context);
+                        estimateTextView.setText("Estimated arrival time: " + estimate + " min");
                         LinearLayout.LayoutParams estimateParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                        estimateLayout.addView(estimateTextView, estimateParams);
+                        estimateLayout.addView(estimateTextView);
                     }
 
                 } else {
                     if (isClickable) {
                         resetSelection();
-
+                        estimateLayout.removeAllViews();
                     }
                 }
             }

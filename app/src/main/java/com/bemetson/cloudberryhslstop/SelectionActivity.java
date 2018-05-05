@@ -44,6 +44,7 @@ public class SelectionActivity extends AppCompatActivity {
     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
     Ringtone r;
     boolean stopVibration = false;
+    String[] busStopsForDemo = new String[14];
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -71,6 +72,8 @@ public class SelectionActivity extends AppCompatActivity {
         editor.putBoolean("busSelected", false);
         editor.commit();
 
+        populateDemoStops();
+
         r = RingtoneManager.getRingtone(getApplicationContext(), notification);
 
         // Placeholder text for actual fetched data
@@ -92,8 +95,10 @@ public class SelectionActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         navigationScrollLinearLayout = (LinearLayout) findViewById(R.id.navigation_scrollview_linearlayout);
-        for (int i = 0; i < 10; i++) {
-            BusStopLayout stop = new BusStopLayout(this, "This is automated " + Integer.toString(i + 1));
+        for (String demoStops : busStopsForDemo) {
+            String stopName = demoStops.split(":")[0];
+            String estimate = demoStops.split(":")[1];
+            BusStopLayout stop = new BusStopLayout(this, stopName, estimate);
             navigationScrollLinearLayout.addView(stop);
             busStopLayouts.add(stop);
         }
@@ -236,6 +241,23 @@ public class SelectionActivity extends AppCompatActivity {
         builder.setContentText(content);
         builder.setSmallIcon(R.drawable.ic_access_alarms_black_24dp);
         return builder.build();
+    }
+
+    private void populateDemoStops() {
+        busStopsForDemo[0] = "Latokartano:1";
+        busStopsForDemo[1] = "Hakarinne:2";
+        busStopsForDemo[2] = "Tuuliniitty:3";
+        busStopsForDemo[3] = "Tapiola (M):4";
+        busStopsForDemo[4] = "Kontiontie:5";
+        busStopsForDemo[5] = "Otsolahdentie:6";
+        busStopsForDemo[6] = "Itäranta:7";
+        busStopsForDemo[7] = "Tekniikantie:8";
+        busStopsForDemo[8] = "Vuorimies:9";
+        busStopsForDemo[9] = "Alvar Aallon Puisto:10";
+        busStopsForDemo[10] = "Dipoli:11";
+        busStopsForDemo[11] = "Otaniemensilta:12";
+        busStopsForDemo[12] = "Lehtisaarentie:13";
+        busStopsForDemo[13] = "Kuusisaarenkuja:14";
     }
 
     public void showEstimateForArrival() {
