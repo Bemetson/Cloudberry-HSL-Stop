@@ -3,7 +3,9 @@ package com.bemetson.cloudberryhslstop;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class BusStopLayout extends LinearLayout {
 
@@ -25,7 +29,7 @@ public class BusStopLayout extends LinearLayout {
     boolean isClickable = true;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    TextView estimateTextView;
+    TextView estimateTextView1, estimateTextView2, estimateTextView3;
     LinearLayout estimateLayout;
 
 
@@ -72,10 +76,24 @@ public class BusStopLayout extends LinearLayout {
                         editor.commit();
 
                         estimateLayout = ((SelectionActivity)context).findViewById(R.id.navigation_estimate_of_arrival);
-                        estimateTextView = new TextView(context);
-                        estimateTextView.setText("Estimated arrival time: " + estimate + " min");
-                        LinearLayout.LayoutParams estimateParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                        estimateLayout.addView(estimateTextView);
+                        estimateTextView1 = new TextView(context);
+                        estimateTextView1.setText("Estimated arrival time: ");
+                        estimateTextView1.setGravity(Gravity.CENTER);
+                        estimateTextView1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                        estimateTextView2 = new TextView(context);
+                        estimateTextView2.setText(estimate);
+                        estimateTextView2.setGravity(Gravity.CENTER);
+                        estimateTextView2.setId(R.id.estimate_time);
+                        estimateTextView2.setTypeface(null, Typeface.BOLD);
+                        estimateTextView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                        estimateTextView3 = new TextView(context);
+                        estimateTextView3.setText(" min");
+                        estimateTextView3.setGravity(Gravity.CENTER);
+                        estimateTextView3.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                        //LinearLayout.LayoutParams estimateParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+                        estimateLayout.addView(estimateTextView1);
+                        estimateLayout.addView(estimateTextView2);
+                        estimateLayout.addView(estimateTextView3);
                     }
 
                 } else {

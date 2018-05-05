@@ -141,6 +141,16 @@ public class SelectionActivity extends AppCompatActivity {
                         if (!nextStop.isPressed) {
                             nextStop.busHasPassed();
                             copy.remove(0);
+                            try {
+                                TextView estimateTextView2 = findViewById(R.id.estimate_time);
+                                String time = String.valueOf(estimateTextView2.getText());
+                                String newTime = String.valueOf(Integer.parseInt(time) - 1);
+                                estimateTextView2.setText(newTime);
+                                Log.w("time", newTime);
+                            } catch (NullPointerException e) {
+                                Log.e("No textview found", e.getLocalizedMessage());
+                            }
+
                             Log.w("Testing moving bus", nextStop.stopname);
                         } else {
                             handler.removeCallbacks(runnable);
@@ -172,6 +182,8 @@ public class SelectionActivity extends AppCompatActivity {
                     }
                     testTravel = false;
                     stopVibration = false;
+                    LinearLayout estimateLayout = findViewById(R.id.navigation_estimate_of_arrival);
+                    estimateLayout.removeAllViews();
                 }
             }
         };
