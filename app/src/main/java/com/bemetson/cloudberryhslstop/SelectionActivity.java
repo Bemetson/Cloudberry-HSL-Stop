@@ -322,4 +322,6 @@ public class SelectionActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ContactActivity.class);
         startActivity(intent);
     }
+
+
 }
