@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,7 +38,7 @@ public class SelectionActivity extends AppCompatActivity {
     private LinearLayout navigationScrollLinearLayout;
     private ImageButton switchViewButton;
     private boolean testTravel = false;  // Bolean value for testing bus movement. On true ends loop
-    SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences_bool, sharedPreferences_stopname;
     private Runnable runnable;
     private Handler handler = new Handler();
     ArrayList<BusStopLayout> busStopLayouts = new ArrayList<>();
@@ -56,9 +57,10 @@ public class SelectionActivity extends AppCompatActivity {
                 case R.id.navigation_list_of_stops:
                     return true;
                 case R.id.navigation_contacts:
-                    return true;
+                    startContacts();
+                    return false;
             }
-            return false;
+            return true;
         }
     };
 
@@ -66,11 +68,6 @@ public class SelectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selection);
-
-        sharedPreferences = getSharedPreferences("selectedBusStopBoolean", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("busSelected", false);
-        editor.commit();
 
         populateDemoStops();
 
@@ -87,7 +84,7 @@ public class SelectionActivity extends AppCompatActivity {
         switchViewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                testBusMovement(0);
+
             }
         });
 
@@ -102,12 +99,61 @@ public class SelectionActivity extends AppCompatActivity {
             navigationScrollLinearLayout.addView(stop);
             busStopLayouts.add(stop);
         }
+        View blank = new View(this);
+        LinearLayout.LayoutParams blank_params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 70);
+        navigationScrollLinearLayout.addView(blank, blank_params);
+
+        sharedPreferences_bool = getSharedPreferences("selectedBusStopBoolean", MODE_PRIVATE);
+        sharedPreferences_stopname = getSharedPreferences("getStopNameString", MODE_PRIVATE);
+        // Use these three lines below if you get logic error preventing selecting stops
+        //SharedPreferences.Editor editor = sharedPreferences_bool.edit();
+        //editor.putBoolean("busSelected", false);
+        //editor.commit();
+        Boolean activateSelection = sharedPreferences_bool.getBoolean("busSelected", false);
+        if (activateSelection) {
+            String stopname = sharedPreferences_stopname.getString("busStop", "none");
+            Log.w("STOPNAME", stopname);
+            for (BusStopLayout stop : busStopLayouts) {
+                if (stopname.equals(stop.getStopname())) {
+                    stop.pressButton();
+                    break;
+                }
+            }
+        }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        MenuItem item = menu.add("Set first five passed");
+        MenuItem search = menu.add("Customize stops");
+        search.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                return true;
+            }
+        });
+
+        MenuItem language = menu.add("Language");
+        language.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                return true;
+            }
+        });
+
+        MenuItem bus = menu.add("DEMO - Start the bus");
+        bus.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                testBusMovement(0);
+                return true;
+            }
+        });
+
+        MenuItem item = menu.add("DEMO - Set first four passed");
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -116,7 +162,7 @@ public class SelectionActivity extends AppCompatActivity {
             }
         });
 
-        MenuItem reset = menu.add("Reset views");
+        MenuItem reset = menu.add("DEMO - Reset views");
         reset.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -171,7 +217,7 @@ public class SelectionActivity extends AppCompatActivity {
                     }
                 }
                 if (type == 1) {
-                    for (int i = 0; i < 5; i++) {
+                    for (int i = 0; i < 4; i++) {
                         BusStopLayout busStop = copy.get(i);
                         busStop.busHasPassed();
                     }
@@ -260,19 +306,20 @@ public class SelectionActivity extends AppCompatActivity {
         busStopsForDemo[1] = "Hakarinne:2";
         busStopsForDemo[2] = "Tuuliniitty:3";
         busStopsForDemo[3] = "Tapiola (M):4";
-        busStopsForDemo[4] = "Kontiontie:5";
-        busStopsForDemo[5] = "Otsolahdentie:6";
-        busStopsForDemo[6] = "Itäranta:7";
-        busStopsForDemo[7] = "Tekniikantie:8";
-        busStopsForDemo[8] = "Vuorimies:9";
-        busStopsForDemo[9] = "Alvar Aallon Puisto:10";
-        busStopsForDemo[10] = "Dipoli:11";
-        busStopsForDemo[11] = "Otaniemensilta:12";
-        busStopsForDemo[12] = "Lehtisaarentie:13";
-        busStopsForDemo[13] = "Kuusisaarenkuja:14";
+        busStopsForDemo[4] = "Kontiontie:1";
+        busStopsForDemo[5] = "Otsolahdentie:2";
+        busStopsForDemo[6] = "Itäranta:3";
+        busStopsForDemo[7] = "Tekniikantie:4";
+        busStopsForDemo[8] = "Vuorimies:5";
+        busStopsForDemo[9] = "Alvar Aallon Puisto:6";
+        busStopsForDemo[10] = "Dipoli:7";
+        busStopsForDemo[11] = "Otaniemensilta:8";
+        busStopsForDemo[12] = "Lehtisaarentie:9";
+        busStopsForDemo[13] = "Kuusisaarenkuja:10";
     }
 
-    public void showEstimateForArrival() {
-        Log.w("Estimate", "Button was clicked");
+    private void startContacts() {
+        Intent intent = new Intent(this, ContactActivity.class);
+        startActivity(intent);
     }
 }

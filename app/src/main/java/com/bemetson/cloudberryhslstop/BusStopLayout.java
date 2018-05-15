@@ -3,6 +3,7 @@ package com.bemetson.cloudberryhslstop;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.util.TypedValue;
@@ -27,13 +28,13 @@ public class BusStopLayout extends LinearLayout {
     int darkerGrey = getResources().getColor(R.color.darkerGrey);
     int white = getResources().getColor(R.color.white);
     boolean isClickable = true;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
+    SharedPreferences sharedPreferences_bool, sharedPreferences_stopname;
+    SharedPreferences.Editor editor_bool, editor_stopname;
     TextView estimateTextView1, estimateTextView2, estimateTextView3;
     LinearLayout estimateLayout;
 
 
-    public BusStopLayout(final Activity context, String stopname, final String estimate) {
+    public BusStopLayout(final Activity context, final String stopname, final String estimate) {
         super(context);
 
         this.context = context;
@@ -41,9 +42,11 @@ public class BusStopLayout extends LinearLayout {
         this.isPressed = false;
         this.estimate = estimate;
 
-        sharedPreferences = context.getSharedPreferences("selectedBusStopBoolean", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        sharedPreferences_bool = context.getSharedPreferences("selectedBusStopBoolean", Context.MODE_PRIVATE);
+        editor_bool = sharedPreferences_bool.edit();
         //Log.w("Sharedpref value: ", String.valueOf(isBusStopSelected));
+        sharedPreferences_stopname = context.getSharedPreferences("getStopNameString", Context.MODE_PRIVATE);
+        editor_stopname = sharedPreferences_stopname.edit();
 
         final ImageView imageView = new ImageView(context);
         imageView.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
@@ -66,40 +69,15 @@ public class BusStopLayout extends LinearLayout {
             @Override
             public void onClick(View v) {
                 if (!isPressed && isClickable) {
-                    boolean anotherBusStopSelected = sharedPreferences.getBoolean("busSelected", true);
+                    boolean anotherBusStopSelected = sharedPreferences_bool.getBoolean("busSelected", true);
                     if (!anotherBusStopSelected) {
-                        imageView.setImageResource(R.drawable.ic_access_alarms_black_24dp);
-                        isPressed = true;
-                        button.setBackgroundResource(R.drawable.button_selected_layout);
-                        button.setTextColor(white);
-                        editor.putBoolean("busSelected", true);
-                        editor.commit();
-
-                        estimateLayout = ((SelectionActivity)context).findViewById(R.id.navigation_estimate_of_arrival);
-                        estimateTextView1 = new TextView(context);
-                        estimateTextView1.setText("Estimated arrival time: ");
-                        estimateTextView1.setGravity(Gravity.CENTER);
-                        estimateTextView1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                        estimateTextView2 = new TextView(context);
-                        estimateTextView2.setText(estimate);
-                        estimateTextView2.setGravity(Gravity.CENTER);
-                        estimateTextView2.setId(R.id.estimate_time);
-                        estimateTextView2.setTypeface(null, Typeface.BOLD);
-                        estimateTextView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                        estimateTextView3 = new TextView(context);
-                        estimateTextView3.setText(" min");
-                        estimateTextView3.setGravity(Gravity.CENTER);
-                        estimateTextView3.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                        //LinearLayout.LayoutParams estimateParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                        estimateLayout.addView(estimateTextView1);
-                        estimateLayout.addView(estimateTextView2);
-                        estimateLayout.addView(estimateTextView3);
+                        pressButton();
                     }
-
                 } else {
                     if (isClickable) {
                         resetSelection();
                         estimateLayout.removeAllViews();
+                        estimateLayout.setVisibility(INVISIBLE);
                     }
                 }
             }
@@ -124,8 +102,10 @@ public class BusStopLayout extends LinearLayout {
         this.imageView.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
         this.button.setBackgroundResource(R.drawable.button_layout);
         this.button.setTextColor(this.darkerGrey);
-        editor.putBoolean("busSelected", false);
-        editor.commit();
+        editor_bool.putBoolean("busSelected", false);
+        editor_bool.commit();
+        editor_stopname.putString("busStop", "none");
+        editor_stopname.commit();
     }
 
 
@@ -141,4 +121,47 @@ public class BusStopLayout extends LinearLayout {
         resetSelection();
     }
 
+    public void pressButton() {
+        imageView.setImageResource(R.drawable.ic_access_alarms_black_24dp);
+        isPressed = true;
+        button.setBackgroundResource(R.drawable.button_selected_layout);
+        button.setTextColor(white);
+
+        editor_bool.putBoolean("busSelected", true);
+        editor_bool.commit();
+        editor_stopname.putString("busStop", stopname);
+        editor_stopname.commit();
+
+        int white = getResources().getColor(R.color.white);
+
+        estimateLayout = ((SelectionActivity) context).findViewById(R.id.navigation_estimate_of_arrival);
+        estimateTextView1 = new TextView(context);
+        estimateTextView1.setText("Estimated Arrival: ");
+        estimateTextView1.setGravity(Gravity.CENTER);
+        estimateTextView1.setTextColor(white);
+        estimateTextView1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        estimateTextView2 = new TextView(context);
+        estimateTextView2.setText(estimate);
+        estimateTextView2.setGravity(Gravity.CENTER);
+        estimateTextView2.setId(R.id.estimate_time);
+        estimateTextView2.setTypeface(null, Typeface.BOLD);
+        estimateTextView2.setTextColor(white);
+        estimateTextView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        estimateTextView3 = new TextView(context);
+        estimateTextView3.setText(" min");
+        estimateTextView3.setGravity(Gravity.CENTER);
+        estimateTextView3.setTextColor(white);
+        estimateTextView3.setTypeface(null, Typeface.BOLD);
+        estimateTextView3.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        //LinearLayout.LayoutParams estimateParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        estimateLayout.addView(estimateTextView1);
+        estimateLayout.addView(estimateTextView2);
+        estimateLayout.addView(estimateTextView3);
+        estimateLayout.setVisibility(VISIBLE);
+
+    }
+
+    public String getStopname() {
+        return this.stopname;
+    }
 }

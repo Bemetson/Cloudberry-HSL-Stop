@@ -20,7 +20,6 @@
         app:elevation="0dp"
         app:menu="@menu/navigation" />
 
-
     <View
         android:id="@+id/navigation_divider"
         android:layout_width="match_parent"
@@ -29,78 +28,93 @@
         android:background="@android:color/darker_gray" />
 
     <LinearLayout
-        android:id="@+id/navigation_bus_information"
+        android:id="@+id/content_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/navigation_divider"
-        android:orientation="horizontal"
-        android:paddingBottom="12dp"
-        android:paddingTop="12dp">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/bus_number_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:gravity="start"
-                android:text="@string/bus_195"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/bus_route_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:gravity="start"
-                android:text="@string/bus_195"
-                android:textSize="24sp" />
-
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/switch_view_imagebutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="12dp"
-            android:background="@drawable/toggle_map_48" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/navigation_estimate_of_arrival"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-    </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/navigation_scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/navigation_estimate_of_arrival"
-        android:layout_below="@id/navigation_bus_information"
-        android:layout_marginBottom="8dp">
-
-        <LinearLayout
-            android:id="@+id/navigation_scrollview_linearlayout"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/navigation_bus_information"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
 
-    </ScrollView>
+                <LinearLayout
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/bus_number_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:gravity="start"
+                        android:text="@string/bus_195"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/bus_route_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:gravity="start"
+                        android:text="@string/bus_195"
+                        android:textSize="24sp" />
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/switch_view_imagebutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/toggle_map_48" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/navigation_estimate_of_arrival"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:padding="4dp"
+                android:orientation="horizontal"
+                android:background="@color/selected"
+                android:visibility="invisible">
+
+            </LinearLayout>
+
+            <ScrollView
+                android:id="@+id/navigation_scrollview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/navigation_estimate_of_arrival"
+                android:layout_below="@id/navigation_bus_information">
+
+                <LinearLayout
+                    android:id="@+id/navigation_scrollview_linearlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="8dp">
+
+                </LinearLayout>
+
+            </ScrollView>
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>
