@@ -34,11 +34,13 @@ public class BusStopData implements Serializable {
 
     public void setIcon(int value) {
         this.addIcon = true;
+        this.hasIcon = true;
         this.iconType = value;
     }
 
     public void reset() {
         this.addIcon = false;
+        this.hasIcon = false;
 
     }
 

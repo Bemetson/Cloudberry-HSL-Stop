@@ -93,13 +93,13 @@ public class BusStopLayout extends LinearLayout implements Serializable {
         this.favourite_icon = favourite_icon;
         this.addView(favourite_icon, favourite_viewParams);
         favourite_icon.setPadding(0, 0, DPConverter(8), 0);
-        favourite_icon.setOnClickListener(new OnClickListener() {
+        /*favourite_icon.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 favourite_icon.setImageResource(0);
                 hasIcon = false;
             }
-        });
+        });*/
 
         LinearLayout.LayoutParams classParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         classParams.setMargins(0, 24, 0, 0);
@@ -195,22 +195,22 @@ public class BusStopLayout extends LinearLayout implements Serializable {
             case 1:
                 favourite_icon.setImageResource(R.drawable.ic_mood_black_24dp);
                 break;
-            case 3:
+            case 2:
                 favourite_icon.setImageResource(R.drawable.ic_school_black_24dp);
                 break;
-            case 4:
+            case 3:
                 favourite_icon.setImageResource(R.drawable.ic_star_border_black_24dp);
                 break;
-            case 5:
+            case 4:
                 favourite_icon.setImageResource(R.drawable.ic_looks_black_24dp);
                 break;
-            case 6:
+            case 5:
                 favourite_icon.setImageResource(R.drawable.ic_flag_black_24dp);
                 break;
-            case 7:
+            case 6:
                 favourite_icon.setImageResource(R.drawable.ic_pets_black_24dp);
                 break;
-            case 8:
+            case 7:
                 favourite_icon.setImageResource(R.drawable.ic_home_black_24dp);
                 break;
         }

@@ -32,6 +32,8 @@
         <activity
             android:name=".StopSearchActivity"
             android:parentActivityName=".SelectionActivity" />
+        <activity android:name=".AddIconDialogActivity"
+            android:theme="@style/CustomDialogTheme"/>
     </application>
 
 </manifest>

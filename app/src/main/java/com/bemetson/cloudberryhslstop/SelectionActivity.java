@@ -147,7 +147,7 @@ public class SelectionActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 Intent intent = new Intent(SelectionActivity.this, StopSearchActivity.class);
                 intent.putExtra("busStops", stopData);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
                 return true;
             }
         });
@@ -191,6 +191,45 @@ public class SelectionActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == 1) {
+            int resultcode = data.getIntExtra("result", 0);
+            if (resultcode == 1) {
+                //BusStopData stopData = (BusStopData) data.getSerializableExtra("stopdata");
+                String stopname = data.getStringExtra("stopname");
+                int icon_value = data.getIntExtra("iconvalue", 1500);
+
+                for (BusStopLayout stopLayout : busStopLayouts) {
+                    if (stopLayout.getStopname().equals(stopname)) {
+                        stopLayout.setFavourite_icon(icon_value);
+                    }
+                }
+
+                for (BusStopData busStopData : stopData) {
+                    if (busStopData.getStopName().equals(stopname)) {
+                        busStopData.setIcon(icon_value);
+                    }
+                }
+
+            } else if (resultcode == -1) {
+                String stopname = data.getStringExtra("stopname");
+
+                for (BusStopLayout stopLayout : busStopLayouts) {
+                    if (stopLayout.getStopname().equals(stopname)) {
+                        stopLayout.setFavourite_icon(9999); //debug value for resetting view
+                    }
+                }
+
+                for (BusStopData busStopData : stopData) {
+                    if (busStopData.getStopName().equals(stopname)) {
+                        busStopData.reset();
+                    }
+                }
+            }
+        }
+    }
+
     // TODO: This method is an absolute balllake and has lots of technical debt. Will fix later
     private void testBusMovement(final int type) {
         ArrayList<BusStopLayout> copy = new ArrayList<>(busStopLayouts);
@@ -208,6 +247,7 @@ public class SelectionActivity extends AppCompatActivity {
             }
             startBus(copy);
         }
+        // This is to reset all views
         if (type == 9999) {
             for (BusStopLayout busStop : copy) {
                 busStop.debug_reset();
