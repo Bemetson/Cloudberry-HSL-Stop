@@ -9,6 +9,8 @@
 
     <string name="bus_195">195</string>
     <string name="bus_195_text">Latokartano - Kamppi</string>
+
+    <string name="stop_search_hint">Enter bus stop name</string>
 </resources>
 
 

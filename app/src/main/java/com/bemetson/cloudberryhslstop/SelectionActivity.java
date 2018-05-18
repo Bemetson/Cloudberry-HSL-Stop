@@ -29,6 +29,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class SelectionActivity extends AppCompatActivity {
@@ -38,14 +40,15 @@ public class SelectionActivity extends AppCompatActivity {
     private LinearLayout navigationScrollLinearLayout;
     private ImageButton switchViewButton;
     private boolean testTravel = false;  // Bolean value for testing bus movement. On true ends loop
-    SharedPreferences sharedPreferences_bool, sharedPreferences_stopname;
+    SharedPreferences sharedPreferences_bool, sharedPreferences_stopname, sharedPreferences_firstTimeLaunch;
     private Runnable runnable;
     private Handler handler = new Handler();
-    ArrayList<BusStopLayout> busStopLayouts = new ArrayList<>();
-    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-    Ringtone r;
-    boolean stopVibration = false;
-    String[] busStopsForDemo = new String[14];
+    private ArrayList<BusStopLayout> busStopLayouts = new ArrayList<>();
+    private Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+    private Ringtone r;
+    private boolean stopVibration = false;
+    private String[] busStopsForDemo = new String[14];
+    private ArrayList<BusStopData> stopData = new ArrayList<>();
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -84,7 +87,7 @@ public class SelectionActivity extends AppCompatActivity {
         switchViewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startMaps();
             }
         });
 
@@ -121,6 +124,16 @@ public class SelectionActivity extends AppCompatActivity {
             }
         }
 
+        // For first time launch, create a new file for storing individual stop icon
+        sharedPreferences_firstTimeLaunch = getPreferences(MODE_PRIVATE);
+        Boolean firstTimeLunch = sharedPreferences_firstTimeLaunch.getBoolean("launch", true);
+        if (firstTimeLunch) {
+            new File(this.getFilesDir(), "savedIcons");
+            SharedPreferences.Editor editor = sharedPreferences_firstTimeLaunch.edit();
+            editor.putBoolean("launch", false);
+        }
+
+
     }
 
     @Override
@@ -130,7 +143,9 @@ public class SelectionActivity extends AppCompatActivity {
         search.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-
+                Intent intent = new Intent(SelectionActivity.this, StopSearchActivity.class);
+                intent.putExtra("busStops", busStopLayouts);
+                startActivity(intent);
                 return true;
             }
         });
@@ -148,7 +163,7 @@ public class SelectionActivity extends AppCompatActivity {
         bus.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                testBusMovement(0);
+                testBusMovement(1);
                 return true;
             }
         });
@@ -157,7 +172,7 @@ public class SelectionActivity extends AppCompatActivity {
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                testBusMovement(1);
+                testBusMovement(0);
                 return true;
             }
         });
@@ -176,64 +191,76 @@ public class SelectionActivity extends AppCompatActivity {
 
     // TODO: This method is an absolute balllake and has lots of technical debt. Will fix later
     private void testBusMovement(final int type) {
+        ArrayList<BusStopLayout> copy = new ArrayList<>(busStopLayouts);
+        if (type == 0) {
+            for (int i = 0; i < 4; i++) {
+                BusStopLayout busStop = copy.get(i);
+                busStop.busHasPassed();
+            }
+        }
+        if (type == 1) {
+            for (int i = 0; i < 4; i++) {
+                BusStopLayout busStop = copy.get(0);
+                busStop.busHasPassed();
+                copy.remove(0);
+            }
+            startBus(copy);
+        }
+        if (type == 9999) {
+            for (BusStopLayout busStop : copy) {
+                busStop.debug_reset();
+            }
+            testTravel = false;
+            stopVibration = false;
+            LinearLayout estimateLayout = findViewById(R.id.navigation_estimate_of_arrival);
+            estimateLayout.removeAllViews();
+            estimateLayout.setBackgroundResource(0);
+        }
+    }
+
+
+    private void startBus(final ArrayList<BusStopLayout> list) {
         runnable = new Runnable() {
-            ArrayList<BusStopLayout> copy = new ArrayList<>(busStopLayouts);
+            ArrayList<BusStopLayout> copy = list;
 
             @Override
             public void run() {
-                if (type == 0) {
-                    if (copy.size() > 0) {
-                        BusStopLayout nextStop = copy.get(0);
-                        if (!nextStop.isPressed) {
-                            nextStop.busHasPassed();
-                            copy.remove(0);
-                            try {
-                                TextView estimateTextView2 = findViewById(R.id.estimate_time);
-                                String time = String.valueOf(estimateTextView2.getText());
-                                String newTime = String.valueOf(Integer.parseInt(time) - 1);
-                                estimateTextView2.setText(newTime);
-                                Log.w("time", newTime);
-                            } catch (NullPointerException e) {
-                                Log.e("No textview found", e.getLocalizedMessage());
-                            }
-
-                            Log.w("Testing moving bus", nextStop.stopname);
-                        } else {
-                            handler.removeCallbacks(runnable);
-                            testTravel = true;
-                            Log.w("Testing moving bus", "Bus has come to a stop");
-                            alarm();
-                            return;
+                if (copy.size() > 0) {
+                    BusStopLayout nextStop = copy.get(0);
+                    if (!nextStop.isPressed) {
+                        nextStop.busHasPassed();
+                        copy.remove(0);
+                        try {
+                            TextView estimateTextView2 = findViewById(R.id.estimate_time);
+                            String time = String.valueOf(estimateTextView2.getText());
+                            String newTime = String.valueOf(Integer.parseInt(time) - 1);
+                            estimateTextView2.setText(newTime);
+                            Log.w("time", newTime);
+                        } catch (NullPointerException e) {
+                            Log.e("No textview found", e.getLocalizedMessage());
                         }
+
+                        Log.w("Testing moving bus", nextStop.stopname);
                     } else {
                         handler.removeCallbacks(runnable);
                         testTravel = true;
                         Log.w("Testing moving bus", "Bus has come to a stop");
+                        alarm();
+                        return;
                     }
-                    if (!testTravel) {
-                        handler.postDelayed(runnable, 1000);
-                    } else {
-                        handler.removeCallbacks(runnable);
-                    }
+                } else {
+                    handler.removeCallbacks(runnable);
+                    testTravel = true;
+                    Log.w("Testing moving bus", "Bus has come to a stop");
                 }
-                if (type == 1) {
-                    for (int i = 0; i < 4; i++) {
-                        BusStopLayout busStop = copy.get(i);
-                        busStop.busHasPassed();
-                    }
-                }
-                if (type == 9999) {
-                    for (BusStopLayout busStop : copy) {
-                        busStop.debug_reset();
-                    }
-                    testTravel = false;
-                    stopVibration = false;
-                    LinearLayout estimateLayout = findViewById(R.id.navigation_estimate_of_arrival);
-                    estimateLayout.removeAllViews();
+                if (!testTravel) {
+                    handler.postDelayed(runnable, 1000);
+                } else {
+                    handler.removeCallbacks(runnable);
                 }
             }
-        };
 
+        };
         handler.postDelayed(runnable, 1000);
     }
 
@@ -267,8 +294,8 @@ public class SelectionActivity extends AppCompatActivity {
         alertDialogBuilder
                 .setMessage("Remember to exit when the bus stops at the next stop!")
                 .setCancelable(false)
-                .setPositiveButton("Okay!",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
+                .setPositiveButton("Okay!", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                         r.stop();
                         stopVibration = true;
                     }
@@ -318,10 +345,20 @@ public class SelectionActivity extends AppCompatActivity {
         busStopsForDemo[13] = "Kuusisaarenkuja:10";
     }
 
+    private void createStopData(String[] busStopsForDemo) {
+        for (BusStopLayout stopLayout : busStopLayouts) {
+
+            //SelectionActivity.this.stopData.add(busStopData);
+        }
+    }
+
     private void startContacts() {
         Intent intent = new Intent(this, ContactActivity.class);
         startActivity(intent);
     }
 
-
+    private void startMaps() {
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity(intent);
+    }
 }

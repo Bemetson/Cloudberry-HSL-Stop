@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Parcelable;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -17,13 +18,15 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-public class BusStopLayout extends LinearLayout {
+import java.io.Serializable;
+
+public class BusStopLayout extends LinearLayout implements Serializable {
 
     Activity context;
     String stopname;
     String estimate;
-    boolean isPressed;
-    ImageView imageView;
+    boolean isPressed, hasIcon;
+    ImageView imageView, favourite_icon;
     Button button;
     int darkerGrey = getResources().getColor(R.color.darkerGrey);
     int white = getResources().getColor(R.color.white);
@@ -50,7 +53,7 @@ public class BusStopLayout extends LinearLayout {
 
         final ImageView imageView = new ImageView(context);
         imageView.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
-        LinearLayout.LayoutParams imageviewParams = new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1.0f);
+        LinearLayout.LayoutParams imageviewParams = new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1.5f);
         imageviewParams.gravity = Gravity.CENTER;
         this.imageView = imageView;
         this.addView(imageView, imageviewParams);
@@ -58,9 +61,9 @@ public class BusStopLayout extends LinearLayout {
         final Button button = new Button(context);
         this.button = button;
         button.setText(stopname);
-        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(0, DPConverter(32), 3.0f);
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(0, DPConverter(32), 8.0f);
         buttonParams.gravity = Gravity.CENTER_VERTICAL;
-        buttonParams.setMargins(DPConverter(8), 0, DPConverter(16), 0);
+        buttonParams.setMargins(DPConverter(8), 0, DPConverter(8), 0);
         button.setTextSize(12.0f);
         button.setBackgroundResource(R.drawable.button_layout);
         button.setTextColor(darkerGrey);
@@ -83,6 +86,20 @@ public class BusStopLayout extends LinearLayout {
             }
         });
         this.addView(button, buttonParams);
+
+        final ImageView favourite_icon = new ImageView(context);
+        LinearLayout.LayoutParams favourite_viewParams = new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1.0f);
+        imageviewParams.gravity = Gravity.CENTER;
+        this.favourite_icon = favourite_icon;
+        this.addView(favourite_icon, favourite_viewParams);
+        favourite_icon.setPadding(0, 0, DPConverter(8), 0);
+        favourite_icon.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                favourite_icon.setImageResource(0);
+                hasIcon = false;
+            }
+        });
 
         LinearLayout.LayoutParams classParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         classParams.setMargins(0, 24, 0, 0);
@@ -157,11 +174,46 @@ public class BusStopLayout extends LinearLayout {
         estimateLayout.addView(estimateTextView1);
         estimateLayout.addView(estimateTextView2);
         estimateLayout.addView(estimateTextView3);
+        estimateLayout.setBackgroundColor(getResources().getColor(R.color.selected));
         estimateLayout.setVisibility(VISIBLE);
 
     }
 
     public String getStopname() {
         return this.stopname;
+    }
+
+    public Boolean hasIcon() {
+        return this.hasIcon;
+    }
+
+    public void setFavourite_icon(int value) {
+        switch (value) {
+            case 0:
+                favourite_icon.setImageResource(R.drawable.ic_location_city_black_24dp);
+                break;
+            case 1:
+                favourite_icon.setImageResource(R.drawable.ic_mood_black_24dp);
+                break;
+            case 3:
+                favourite_icon.setImageResource(R.drawable.ic_school_black_24dp);
+                break;
+            case 4:
+                favourite_icon.setImageResource(R.drawable.ic_star_border_black_24dp);
+                break;
+            case 5:
+                favourite_icon.setImageResource(R.drawable.ic_looks_black_24dp);
+                break;
+            case 6:
+                favourite_icon.setImageResource(R.drawable.ic_flag_black_24dp);
+                break;
+            case 7:
+                favourite_icon.setImageResource(R.drawable.ic_pets_black_24dp);
+                break;
+            case 8:
+                favourite_icon.setImageResource(R.drawable.ic_home_black_24dp);
+                break;
+        }
+        hasIcon = true;
     }
 }

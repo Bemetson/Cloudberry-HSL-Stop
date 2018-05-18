@@ -23,10 +23,15 @@
 
         <receiver android:name=".NotificationPublisher" />
 
-        <activity android:name=".ContactActivity"
-            android:parentActivityName=".SelectionActivity">
-
-        </activity>
+        <activity
+            android:name=".ContactActivity"
+            android:parentActivityName=".SelectionActivity" />
+        <activity
+            android:name=".MapActivity"
+            android:parentActivityName=".SelectionActivity" />
+        <activity
+            android:name=".StopSearchActivity"
+            android:parentActivityName=".SelectionActivity" />
     </application>
 
 </manifest>
