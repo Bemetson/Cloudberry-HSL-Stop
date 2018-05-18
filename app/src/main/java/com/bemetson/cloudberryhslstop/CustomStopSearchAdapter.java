@@ -16,11 +16,11 @@ import java.util.ArrayList;
 
 public class CustomStopSearchAdapter extends BaseAdapter implements Filterable {
 
-    private ArrayList<BusStopLayout> original = new ArrayList<>();
-    private ArrayList<BusStopLayout> filtered = new ArrayList<>();
+    private ArrayList<BusStopData> original = new ArrayList<>();
+    private ArrayList<BusStopData> filtered = new ArrayList<>();
     private Activity context;
 
-    public CustomStopSearchAdapter(Activity context, ArrayList<BusStopLayout> busStops) {
+    public CustomStopSearchAdapter(Activity context, ArrayList<BusStopData> busStops) {
 
         this.original = busStops;
         this.filtered = busStops;
@@ -52,10 +52,10 @@ public class CustomStopSearchAdapter extends BaseAdapter implements Filterable {
         ImageView icon = row.findViewById(R.id.stop_search_listview_imageview);
         TextView iconDescription = row.findViewById(R.id.stop_search_listview_imageview_description);
 
-        BusStopLayout busStop = filtered.get(position);
-        stopName.setText(busStop.getStopname());
+        BusStopData busStop = filtered.get(position);
+        stopName.setText(busStop.getStopName());
 
-        if (busStop.hasIcon) {
+        if (busStop.getHasIcon()) {
             icon.setImageResource(R.drawable.ic_clear_black_24dp);
             iconDescription.setText("Remove icon");
         } else {
@@ -72,10 +72,10 @@ public class CustomStopSearchAdapter extends BaseAdapter implements Filterable {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
                 FilterResults results = new FilterResults();
-                ArrayList<BusStopLayout> filteredStops = new ArrayList<>();
+                ArrayList<BusStopData> filteredStops = new ArrayList<>();
 
-                for (BusStopLayout busStop : original) {
-                    String stopName = busStop.getStopname();
+                for (BusStopData busStop : original) {
+                    String stopName = busStop.getStopName();
                     if (stopName.startsWith(charSequence.toString())) {
                         filteredStops.add(busStop);
                     }
@@ -89,7 +89,7 @@ public class CustomStopSearchAdapter extends BaseAdapter implements Filterable {
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                filtered = (ArrayList<BusStopLayout>) filterResults.values;
+                filtered = (ArrayList<BusStopData>) filterResults.values;
                 notifyDataSetChanged();
             }
         };

@@ -133,6 +133,8 @@ public class SelectionActivity extends AppCompatActivity {
             editor.putBoolean("launch", false);
         }
 
+        //create dummy
+        createStopData();
 
     }
 
@@ -144,7 +146,7 @@ public class SelectionActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 Intent intent = new Intent(SelectionActivity.this, StopSearchActivity.class);
-                intent.putExtra("busStops", busStopLayouts);
+                intent.putExtra("busStops", stopData);
                 startActivity(intent);
                 return true;
             }
@@ -345,10 +347,12 @@ public class SelectionActivity extends AppCompatActivity {
         busStopsForDemo[13] = "Kuusisaarenkuja:10";
     }
 
-    private void createStopData(String[] busStopsForDemo) {
+    private void createStopData() {
         for (BusStopLayout stopLayout : busStopLayouts) {
-
-            //SelectionActivity.this.stopData.add(busStopData);
+            String name = stopLayout.getStopname();
+            boolean hasIcon = stopLayout.hasIcon();
+            BusStopData busStopData = new BusStopData(name, false, hasIcon, 1500);
+            stopData.add(busStopData);
         }
     }
 

@@ -3,15 +3,17 @@
     android:id="@+id/stop_search_listview_linearlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <TextView
         android:id="@+id/stop_search_listview_textview"
         android:layout_width="0px"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="5"
-        android:padding="16dp"
+        android:layout_weight="4"
+        android:padding="8dp"
         android:textSize="16sp" />
 
     <ImageView
@@ -20,14 +22,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:padding="16dp" />
+        android:padding="4dp"/>
 
     <TextView
         android:id="@+id/stop_search_listview_imageview_description"
         android:layout_width="0px"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:padding="16dp" />
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:layout_weight="2"
+        android:padding="0dp"/>
 
 </LinearLayout>

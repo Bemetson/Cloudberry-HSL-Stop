@@ -28,4 +28,18 @@ public class BusStopData implements Serializable {
         return this.iconType;
     }
 
+    public boolean getHasIcon() {
+        return this.hasIcon;
+    }
+
+    public void setIcon(int value) {
+        this.addIcon = true;
+        this.iconType = value;
+    }
+
+    public void reset() {
+        this.addIcon = false;
+
+    }
+
 }

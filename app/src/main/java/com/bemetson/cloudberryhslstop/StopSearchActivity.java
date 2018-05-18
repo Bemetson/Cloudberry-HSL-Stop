@@ -19,7 +19,7 @@ import java.util.Comparator;
 
 public class StopSearchActivity extends AppCompatActivity {
 
-    ArrayList<BusStopLayout> busStopLayouts;
+    ArrayList<BusStopData> busStopdatas;
     CustomStopSearchAdapter adapter;
 
     @Override
@@ -31,23 +31,63 @@ public class StopSearchActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        String[] busStops = (String[]) intent.getSerializableExtra("busStops");
-        for (String stopname : busStops) {
-            String[] stop = stopname.split(":");
+        busStopdatas = (ArrayList<BusStopData>) intent.getSerializableExtra("busStops");
+        for (BusStopData data : busStopdatas) {
 
         }
 
+        search();
     }
 
     private void search() {
-        Collections.sort(busStopLayouts, new Comparator<BusStopLayout>() {
+        Collections.sort(busStopdatas, new Comparator<BusStopData>() {
+            @Override
+            public int compare(BusStopData left, BusStopData right) {
+                return left.getStopName().compareToIgnoreCase(right.getStopName());
+            }
+        });
+
+        adapter = new CustomStopSearchAdapter(this, busStopdatas);
+
+        ListView listView = findViewById(R.id.stop_search_listview);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //Log.w("LISTVIEW", "YOU JUST CLICKED AN ITEM");
+
+            }
+        });
+
+        EditText editText = findViewById(R.id.stop_search_edittext);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                StopSearchActivity.this.adapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+}
+
+/*
+Collections.sort(busStopdatas, new Comparator<BusStopData>() {
             @Override
             public int compare(BusStopLayout left, BusStopLayout right) {
                 return left.getStopname().compareToIgnoreCase(right.getStopname());
             }
         });
 
-        adapter = new CustomStopSearchAdapter(this, busStopLayouts);
+        adapter = new CustomStopSearchAdapter(this, busStopdatas);
 
         ListView listView = findViewById(R.id.stop_search_listview);
         listView.setAdapter(adapter);
@@ -76,4 +116,4 @@ public class StopSearchActivity extends AppCompatActivity {
             }
         });
     }
-}
+ */
