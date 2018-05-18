@@ -183,7 +183,7 @@ public class BusStopLayout extends LinearLayout implements Serializable {
         return this.stopname;
     }
 
-    public Boolean hasIcon() {
+    public boolean hasIcon() {
         return this.hasIcon;
     }
 
@@ -214,6 +214,12 @@ public class BusStopLayout extends LinearLayout implements Serializable {
                 favourite_icon.setImageResource(R.drawable.ic_home_black_24dp);
                 break;
         }
-        hasIcon = true;
+        if (value == 9999) {
+            favourite_icon.setImageResource(0);
+            hasIcon = false;
+        } else {
+            hasIcon = true;
+        }
+
     }
 }
