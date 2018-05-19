@@ -14,6 +14,11 @@
         android:hint="@string/stop_search_hint"
         android:inputType="textCapWords"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
     <ListView
         android:id="@+id/stop_search_listview"
         android:layout_width="match_parent"

@@ -50,6 +50,7 @@ public class CustomStopSearchAdapter extends BaseAdapter implements Filterable {
 
         TextView stopName = row.findViewById(R.id.stop_search_listview_textview);
         ImageView icon = row.findViewById(R.id.stop_search_listview_imageview);
+        ImageView deleteicon = row.findViewById(R.id.stop_search_listview_icon);
         TextView iconDescription = row.findViewById(R.id.stop_search_listview_imageview_description);
 
         BusStopData busStop = filtered.get(position);
@@ -58,6 +59,33 @@ public class CustomStopSearchAdapter extends BaseAdapter implements Filterable {
         if (busStop.getHasIcon()) {
             icon.setImageResource(R.drawable.ic_clear_black_24dp);
             iconDescription.setText("Remove icon");
+            switch (busStop.getIconType()) {
+                case 0:
+                    deleteicon.setImageResource(R.drawable.ic_location_city_black_24dp);
+                    break;
+                case 1:
+                    deleteicon.setImageResource(R.drawable.ic_mood_black_24dp);
+                    break;
+                case 2:
+                    deleteicon.setImageResource(R.drawable.ic_school_black_24dp);
+                    break;
+                case 3:
+                    deleteicon.setImageResource(R.drawable.ic_star_border_black_24dp);
+                    break;
+                case 4:
+                    deleteicon.setImageResource(R.drawable.ic_looks_black_24dp);
+                    break;
+                case 5:
+                    deleteicon.setImageResource(R.drawable.ic_flag_black_24dp);
+                    break;
+                case 6:
+                    deleteicon.setImageResource(R.drawable.ic_pets_black_24dp);
+                    break;
+                case 7:
+                    deleteicon.setImageResource(R.drawable.ic_home_black_24dp);
+                    break;
+            }
+            deleteicon.setVisibility(View.VISIBLE);
         } else {
             icon.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
             iconDescription.setText("Add icon");

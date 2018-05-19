@@ -89,10 +89,12 @@ public class BusStopLayout extends LinearLayout implements Serializable {
 
         final ImageView favourite_icon = new ImageView(context);
         LinearLayout.LayoutParams favourite_viewParams = new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1.0f);
-        imageviewParams.gravity = Gravity.CENTER;
+        favourite_viewParams.gravity = Gravity.CENTER;
+        //favourite_viewParams.setMarginEnd(DPConverter(2));
         this.favourite_icon = favourite_icon;
         this.addView(favourite_icon, favourite_viewParams);
-        favourite_icon.setPadding(0, 0, DPConverter(8), 0);
+        favourite_icon.setPadding(DPConverter(0), DPConverter(0), DPConverter(8), DPConverter(0));
+        //favourite_icon.setBackground(getResources().getDrawable(R.drawable.button_layout));
         /*favourite_icon.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
